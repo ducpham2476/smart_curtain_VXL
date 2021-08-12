@@ -3,5 +3,5 @@ This is a project about Smart Curtain - within the scope of HUST's Microprocesso
 
 Documents about the project can be found in Documents folder. Documents are written in Vietnamese.
 
-Code files can be found in Code folder.
+Code files can be found in master folder, or for the final code, check out Final folder.
 
