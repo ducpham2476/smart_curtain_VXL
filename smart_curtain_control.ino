@@ -1,4 +1,5 @@
 // Smart curtain project - Control source code
+
 // ---------------------------------------------------------------------------------------------------------------------
 // Include required libraries
 // WiFi functions library
@@ -55,27 +56,25 @@ unsigned int ready_to_close = 0;
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Additional functions to control motors
-void control_open()
+void control_open()                     // Turn on motor, to open the curtain
 {
   digitalWrite(LED_OPEN, HIGH);         // Indicate the curtain is being open, physically on board (green)
-  // Control the motor to open the curtain
   digitalWrite(L298_IN_1, LOW);         // Control the left motor, clockwise
   digitalWrite(L298_IN_2, HIGH);
   digitalWrite(L298_IN_3, LOW);         // Control the right motor, clockwise
   digitalWrite(L298_IN_4, HIGH);
 }
 
-void control_close()
+void control_close()                     // Turn on motor, to close the curtain
 {
   digitalWrite(LED_CLOSE, HIGH);         // Indicate the curtain is being closed, physically on board (red)
-  // Control the motor to close the curtain
   digitalWrite(L298_IN_1, HIGH);         // Control the left motor, counter-clockwise
   digitalWrite(L298_IN_2, LOW);
   digitalWrite(L298_IN_3, HIGH);         // Control the right motor, counter-clockwise
   digitalWrite(L298_IN_4, LOW);
 }
 
-void control_release_open()
+void control_release_open()              // Turn off motor, work with Blynk application
 { 
   // Turn off indicator LEDs
   digitalWrite(LED_OPEN, LOW);          
@@ -87,7 +86,7 @@ void control_release_open()
   ready_to_close = 1;
 }
 
-void control_release_close()
+void control_release_close()              // Turn off motor, work with Blynk application
 {
   // Turn off indicator LEDs
   digitalWrite(LED_CLOSE, LOW);          
@@ -99,7 +98,7 @@ void control_release_close()
   ready_to_close = 0;
 }
 
-void control_release()
+void control_release()                      // Turn off motor, work with WebServer & Physicall buttons
 {
   // Turn off indicator LEDs
   digitalWrite(LED_OPEN, LOW);
@@ -134,10 +133,8 @@ void setup() {
   pinMode(L298_IN_4, OUTPUT);
   pinMode(L298_EN_A, OUTPUT);
   pinMode(L298_EN_B, OUTPUT);
-
   control_release();                    // Clear all undefined output from pins
   // Set up PWM for L298_EN_A and L298_EN_B
-  
   ledcSetup(PWM_CHANNEL_A, frequency, resolution);      // Channel A
   ledcAttachPin(L298_EN_A, PWM_CHANNEL_A);
   ledcSetup(PWM_CHANNEL_B, frequency, resolution);      // Channel B
@@ -164,7 +161,7 @@ void setup() {
   Serial.println(WiFi.localIP());
   // Serial.println(WiFi.SSID());
   // Serial.println(WiFi.psk());
-
+  // Start the web server on WiFi.localIP() address
   server.begin();
   Serial.println("Server has started!");
 
@@ -179,10 +176,9 @@ void setup() {
   char password[psk_length];
   ssid_string.toCharArray(ssid, ssid_length);
   psk_string.toCharArray(password, psk_length);
-  
   // Establish connection to Blynk server
   Blynk.begin(auth, ssid, password, server_address, 8080);
-  // When established connection, write information to Serial/Blynk application
+  // When connection established, write information to Serial/Blynk application
   Serial.println("Connected to Blynk server!");
   Blynk.virtualWrite(V5, "clr");              // Set up Blynk terminal input pin V5
   Blynk.virtualWrite(V5, "Connected to ESP32 - Smart curtain control");
@@ -203,8 +199,8 @@ void loop() {
   {
     Blynk.run();
   }  
-  // ---------------------------------------------------------------------------------------------------------------------
-  // ---------------------------------------------------------------------------------------------------------------------
+  // -------------------------------------------------------------------------------------------------------------------
+  // -------------------------------------------------------------------------------------------------------------------
   // Work with Web server
   else if (mode_select == '1')
   {    
@@ -318,7 +314,6 @@ void loop() {
     }
   }
   // -------------------------------------------------------------------------------------------------------------------
-      
   // -------------------------------------------------------------------------------------------------------------------
   // Work with physical buttons
   else if (mode_select == '2')
